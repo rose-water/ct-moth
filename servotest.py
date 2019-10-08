@@ -41,3 +41,4 @@ while True:
     servo_1.write_angle(lightVal)
     servo_2.write_angle(-lightVal)
     time.sleep(0.25)
+
