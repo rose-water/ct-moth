@@ -14,6 +14,10 @@ wingLeft = Servo(pin1)
 wingRight = Servo(pin2)
 
 # Light sensor setup
+# A light sensor outputs values in the range 0 - 4096, where
+# 4096 is darkest and 0 is brightest. However in this circuit
+# it is reversed, with 0 indicating lowest level of light and 
+# higher numbers indicating higher levels of light. 
 pin34 = machine.Pin(34) # A2
 adc = machine.ADC(pin34)
 adc.atten(machine.ADC.ATTN_11DB)
@@ -35,45 +39,52 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
 
 # ------------------------------------------------------------
+# For whatever reason my two servos, even though they're from 
+# the same company, are not oriented the same way and their 0
+# positions are opposite each other, hence one being 180 and 
+# the other being 0.
 def setRestingPosition():
-    print("[ setRestingPosition ]")
-    wingLeft.write_angle(-45)
-    wingRight.write_angle(45)
+    print("Setting resting position...")
+    wingLeft.write_angle(180)
+    wingRight.write_angle(0)
 
 
 # ------------------------------------------------------------
 def prepMoth():
-    print("[ prepMoth ]")
+    print("Prepping moth...")
     wingLeft.write_angle(0)
     wingRight.write_angle(0)
-    time.sleep(10)
+    time.sleep(5)
+
     setRestingPosition()
-    time.sleep(10)
-    print("Moth READY")
+    time.sleep(5)
+    print("Moth READY.")
+
 
 # ------------------------------------------------------------
-# A light sensor outputs values in the range 0 - 4096, where
-# 4096 is darkest and 0 is brightest. However in this circuit
-# it is reversed, with 0 indicating lowest level of light and 
-# higher numbers indicating higher levels of light. 
-#
-# We want the moth's wings to be more open and flutter more
-# rapidly with more light, indicating happiness, and to be 
-# closed with the lowest amount of light.
-# ------------------------------------------------------------
-
-prepMoth()
-
-while True: 
-
-    lightVal = adc.read()
-    print("lightVal: " + str(lightVal))
-
-    rightWingAngle = translate(lightVal, 1900, 4096, 0, 90)
-    leftWingAngle = translate(lightVal, 1900, 4096, 0, 90)
-
-    wingLeft.write_angle(-leftWingAngle)
-    wingRight.write_angle(rightWingAngle)
+def runMoth():
+    print("Initializing moth...")
     
-    time.sleep(0.25)
+    prepMoth()
+    
+    while True: 
+        lightVal = adc.read()
+        print("lightVal: " + str(lightVal))
+        
+        wingAngle = translate(lightVal, 3000, 4096, 0, 180)
 
+        if wingAngle < 0:
+            wingAngle = 0
+        
+        elif wingAngle > 180:
+            wingAngle = 180
+            
+        wingLeft.write_angle(180 - wingAngle)
+        wingRight.write_angle(wingAngle)
+        
+        print("rightWingAngle: " + str(wingAngle) + ", leftWingAngle: " + str(180 - wingAngle))
+        
+        time.sleep(0.25)
+
+# ------------------------------------------------------------
+runMoth()
