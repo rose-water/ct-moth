@@ -15,6 +15,7 @@ wingRight = Servo(pin2)
 
 # Vibrating motor
 pin21 = machine.Pin(21, machine.Pin.OUT) 
+pin21.value(0)
 
 # Light sensor
 # Outputs values in the range 0 - 4096, where 4096 is darkest, 0 
@@ -99,15 +100,29 @@ def flapBasedOnExcitement(lightLevel):
     elif delayAmt > delayMax:
         delayAmt = delayMax
 
+    wingAngle = translate(lightLevel, 3300, 4096, 0, 180)
+
+    if wingAngle < 0:
+        wingAngle = 0
+    
+    elif wingAngle > 180:
+        wingAngle = 180
+
+    wingAngle = int(wingAngle)
+
     print("delayAmt: " + str(delayAmt))
+    print("wingAngle: " + str(wingAngle))
 
-    wingLeft.write_angle(180)
+    wingLeft.write_angle(180) 
     wingRight.write_angle(0)
+    pin21.value(1)
     time.sleep(delayAmt)
 
-    wingLeft.write_angle(0)
-    wingRight.write_angle(180)
+    wingLeft.write_angle(180 - wingAngle)
+    wingRight.write_angle(wingAngle)
+    pin21.value(0)
     time.sleep(delayAmt)
+
 
 # ------------------------------------------------------------
 # A test function, opens wings (moves servos) in proportion to
@@ -135,7 +150,7 @@ def runMoth():
     prepMoth()
 
     while True:
-        pin21.value(1)
+
         lightVal = adc.read()
         # spreadWingsByLight(lightVal)
         flapBasedOnExcitement(lightVal)
@@ -143,3 +158,4 @@ def runMoth():
 
 # ------------------------------------------------------------
 runMoth()
+pin21.value(0)
