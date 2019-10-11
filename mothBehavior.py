@@ -6,14 +6,17 @@ from servo import Servo
 # ------------------------------------------------------------
 # PIN SETUP
 # ------------------------------------------------------------
-# Servo setup
+# Servos
 pin1 = machine.Pin(4)  # GPIO 4
 pin2 = machine.Pin(27) # GPIO 27
 
 wingLeft = Servo(pin1)
 wingRight = Servo(pin2)
 
-# Light sensor setup
+# Vibrating motor
+pin21 = machine.Pin(21, machine.Pin.OUT) 
+
+# Light sensor
 # Outputs values in the range 0 - 4096, where 4096 is darkest, 0 
 # is brightest. However here it is reversed, with 0 indicating 
 # lowest level of light. 
@@ -39,6 +42,20 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
     # Convert the 0-1 range into a value in the right range.
     return rightMin + int(valueScaled * rightSpan)
+
+
+# ------------------------------------------------------------
+def translateInverse(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+    valueScaled = 1 - valueScaled
+
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
 
 
 # ------------------------------------------------------------
@@ -70,14 +87,27 @@ def prepMoth():
 # seems to the the lowest amount we can do comfortably when 
 # going from 0 to 180.
 def flapBasedOnExcitement(lightLevel):
-    # delayAmt = translate(lightLevel)
+    delayMin = 0.35
+    delayMax = 1.0
+
+    delayAmt = translateInverse(lightLevel, 3300, 4096, delayMin, delayMax)
+    delayAmt = float(str(round(delayAmt, 2)))
+
+    if delayAmt < delayMin:
+        delayAmt = delayMin
+    
+    elif delayAmt > delayMax:
+        delayAmt = delayMax
+
+    print("delayAmt: " + str(delayAmt))
+
     wingLeft.write_angle(180)
     wingRight.write_angle(0)
-    time.sleep(0.35)
+    time.sleep(delayAmt)
 
     wingLeft.write_angle(0)
     wingRight.write_angle(180)
-    time.sleep(0.35)
+    time.sleep(delayAmt)
 
 # ------------------------------------------------------------
 # A test function, opens wings (moves servos) in proportion to
@@ -105,6 +135,7 @@ def runMoth():
     prepMoth()
 
     while True:
+        pin21.value(1)
         lightVal = adc.read()
         # spreadWingsByLight(lightVal)
         flapBasedOnExcitement(lightVal)
