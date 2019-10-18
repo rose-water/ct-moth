@@ -24,8 +24,11 @@ pin21.value(0)
 pin34 = machine.Pin(34) # A2
 adc = machine.ADC(pin34)
 adc.atten(machine.ADC.ATTN_11DB)
-
 lightVal = 0
+
+# LEDS
+ledPin33 = machine.Pin(33, machine.Pin.OUT)
+ledPin15 = machine.Pin(15, machine.Pin.OUT)
 
 # MOTH FEELS!
 excitementLevel = 0
@@ -73,8 +76,8 @@ def setRestingPosition():
 # ------------------------------------------------------------
 def prepMoth():
     print("Prepping moth...")
-    wingLeft.write_angle(0)
-    wingRight.write_angle(0)
+    # wingLeft.write_angle(0)
+    # wingRight.write_angle(0)
     time.sleep(5)
 
     setRestingPosition()
@@ -88,7 +91,7 @@ def prepMoth():
 # seems to the the lowest amount we can do comfortably when 
 # going from 0 to 180.
 def flapBasedOnExcitement(lightLevel):
-    delayMin = 0.35
+    delayMin = 0.25
     delayMax = 1.0
 
     delayAmt = translateInverse(lightLevel, 3300, 4096, delayMin, delayMax)
@@ -100,28 +103,35 @@ def flapBasedOnExcitement(lightLevel):
     elif delayAmt > delayMax:
         delayAmt = delayMax
 
-    wingAngle = translate(lightLevel, 3300, 4096, 0, 180)
+    wingAngle = int(translate(lightLevel, 3300, 4096, 0, 165))
 
     if wingAngle < 0:
         wingAngle = 0
     
-    elif wingAngle > 180:
-        wingAngle = 180
-
-    wingAngle = int(wingAngle)
+    elif wingAngle > 165:
+        wingAngle = 165
 
     print("delayAmt: " + str(delayAmt))
     print("wingAngle: " + str(wingAngle))
 
-    wingLeft.write_angle(180) 
-    wingRight.write_angle(0)
-    pin21.value(1)
-    time.sleep(delayAmt)
+    if wingAngle <= 12:
+        twitchWings()
+        ledPin33.value(0)
+        ledPin15.value(0)
+    
+    else:
+        pin21.value(0)
+        wingLeft.write_angle(180) 
+        wingRight.write_angle(0)
+        ledPin33.value(1)
+        ledPin15.value(1)
+        time.sleep(delayAmt)
 
-    wingLeft.write_angle(180 - wingAngle)
-    wingRight.write_angle(wingAngle)
-    pin21.value(0)
-    time.sleep(delayAmt)
+        wingLeft.write_angle(180 - wingAngle)
+        wingRight.write_angle(wingAngle)
+        ledPin33.value(0)
+        ledPin15.value(0)
+        time.sleep(delayAmt)
 
 
 # ------------------------------------------------------------
@@ -135,12 +145,22 @@ def spreadWingsByLight(lightLevel):
     
     elif wingAngle > 180:
         wingAngle = 180
-
-    wingLeft.write_angle(180 - wingAngle)
-    wingRight.write_angle(wingAngle)
     
     print("rightWingAngle: " + str(wingAngle) + ", leftWingAngle: " + str(180 - wingAngle))
     
+    time.sleep(0.25)
+
+
+# ------------------------------------------------------------
+def twitchWings():
+    pin21.value(1)
+    wingLeft.write_angle(180)
+    wingRight.write_angle(0)
+    time.sleep(0.25)
+
+    pin21.value(0)
+    wingLeft.write_angle(170)
+    wingRight.write_angle(10)
     time.sleep(0.25)
 
 
@@ -150,11 +170,9 @@ def runMoth():
     prepMoth()
 
     while True:
-
         lightVal = adc.read()
         # spreadWingsByLight(lightVal)
         flapBasedOnExcitement(lightVal)
-    
 
 # ------------------------------------------------------------
 runMoth()
