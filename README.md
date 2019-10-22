@@ -27,7 +27,11 @@ This project needs a strong concept as well as thoughtful design and form making
 
 ![gif](https://github.com/rose-water/ct-moth/blob/master/meta/mothy.gif)
 
-This robot moth was inspired by real life moths from my mother's garden. Because we were tasked to design a project that made use of servos, the most obvious choice was to use the servos to drive the wings. The moth has an idle state where its wings are 'twitching' and the motor is vibrating, indicating that the moth is 'hungry' for light. The readings from the photocell are mapped to the speed of the moth's wings flapping as well as the range of movement. When light levels are high, the motor stops buzzing, the wings flap at higher speeds and move with a wider range, and the LEDs light up and blink to indicate the moth is 'feeding.' 
+This robot moth was inspired by real life moths from my mother's garden. Because we were tasked to design a project that made use of servos, the most obvious choice was to use the servos to drive the wings. It was important for me to try and make the moth as small as possible, which is one reason why I used the ESP32 and soldered the components to a perfboard. This was by far the most challenging part of the project. It is made mobile by using a 3.7V Lipo battery pack, so you can carry the moth in your hand to brighter areas.
+
+# ![screenshot](https://raw.githubusercontent.com/rose-water/ct-moth/master/meta/components.jpg)
+
+The moth has an idle state where its wings are 'twitching' and the motor is vibrating, indicating that the moth is 'hungry' for light. The readings from the photocell are mapped to the speed of the moth's wings flapping as well as the range of movement. When light levels are high, the motor stops buzzing, the wings flap at higher speeds and move with a wider range, and the LEDs light up and blink to indicate the moth is 'feeding.' 
 
 ---
 
@@ -47,6 +51,8 @@ The moth is built with the following components:
 **Enclosure**
 
 # ![screenshot](https://raw.githubusercontent.com/rose-water/ct-moth/master/meta/enclosure.png)
+
+# ![screenshot](https://raw.githubusercontent.com/rose-water/ct-moth/master/meta/still.jpg)
 
 The enclosure was made from laser cut illustration board. I modeled the enclosure in Cinema 4D (because it's what I'm most comfortable with at the moment), exported it as an OBJ, then used this Python addon called [Export-Paper-Model-From-Blender](https://github.com/addam/Export-Paper-Model-from-Blender) for [Blender 2.8](https://www.blender.org/download/releases/2-80/). More information can be found [here](https://www.instructables.com/id/Papercraft-With-Blender/) (please note these instructions are for an older version of Blender, but they still apply to the plugin linked above). 
 
