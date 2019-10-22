@@ -20,3 +20,16 @@ This project needs a strong concept as well as thoughtful design and form making
 - The movement must be altered based on input from a sensor(s)
 - Avoid literal human faces
 - Use more than one sensor and/or more than one servo
+
+---
+
+**ABOUT**
+This robot moth was inspired by real life moths from my mother's garden. Because we were tasked to design a project that made use of servos, the most obvious choice would be to use the servos to drive the wings. The moth has an idle state where its wings are 'twitching' and the motor is vibrating, indicating that the moth is 'hungry' for light. The readings from the photocell are mapped to the speed of the moth's wings flapping as well as the range of movement. When light levels are high, the motor stops buzzing, the wings flap at higher speeds and move with a wider range, and the LEDs light up and blink to indicate the moth is 'feeding.' 
+
+The moth is built with the following components:
+
+- Adafruit HUZZAH32 - ESP32 Feather Board
+- 2x Diffuse White LEDs
+- Photocell
+- Mini Vibrating Motor
+- 2x Micro Servos 
