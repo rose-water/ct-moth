@@ -1,4 +1,4 @@
-# Media Design Practices - Creative Technology I
+# MDP - Creative Technology I
 ## Behavior in Motion
 
 ---
@@ -29,8 +29,12 @@ This robot moth was inspired by real life moths from my mother's garden. Because
 
 The moth is built with the following components:
 
-- Adafruit HUZZAH32 - ESP32 Feather Board
+- [Adafruit HUZZAH32 - ESP32 Feather Board](https://www.adafruit.com/product/3405)
 - 2x Diffuse White LEDs
 - Photocell
 - Mini Vibrating Motor
 - 2x Micro Servos 
+
+The enclosure was made from laser cut illustration board. I modeled the enclosure in Cinema 4D (because it's what I'm most comfortable with at the moment), exported it as an OBJ, then used this Python addon called [Export-Paper-Model-From-Blender](https://github.com/addam/Export-Paper-Model-from-Blender) for [Blender 2.8](https://www.blender.org/download/releases/2-80/). More information can be found [here](https://www.instructables.com/id/Papercraft-With-Blender/) (please note these instructions are for an older version of Blender, but they still apply to the plugin linked above). 
+
+The Export-Paper-Model-From-Blender plugin allows you to export as an SVG, so I did that and created layers in an Illustration file (CS6, not CC) that are ready for laser printing. The OBJ and the AI files are available in the `resources` directory.
